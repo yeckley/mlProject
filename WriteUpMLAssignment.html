@@ -64,7 +64,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>The aim of this project is to predict whether a specific exercise was performed correctly, based on analysis of sensor data that has been collected while subjects performed that exercise correctly and with common errors. The present study finds that the random forest method from the R caret package performs quite well, using the model’s default training options.</p>
 <p>Below is a brief synopsis of the experiment design from the original research paper. The paper provides additional details about the instruments used to collect data, and controls on performance and monitoring.</p>
 <blockquote>
-<p>Participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fash- ions: exactly according to the specification (Class A), throw- ing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Class A corresponds to the specifed execution of the exercise, while the other 4 classes correspond to common mistakes.&quot; source: <a href="http://groupware.les.inf.puc-rio.br/public/papers/2013.Velloso.QAR-WLE.pdf">http://groupware.les.inf.puc-rio.br/public/papers/2013.Velloso.QAR-WLE.pdf</a></p>
+<p>Participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Class A corresponds to the specifed execution of the exercise, while the other 4 classes correspond to common mistakes.&quot; source: <a href="http://groupware.les.inf.puc-rio.br/public/papers/2013.Velloso.QAR-WLE.pdf">http://groupware.les.inf.puc-rio.br/public/papers/2013.Velloso.QAR-WLE.pdf</a></p>
 </blockquote>
 <div id="load-libraries" class="section level3">
 <h3>Load libraries</h3>
@@ -102,10 +102,10 @@ dim(pmlTrain)</code></pre>
 <div id="remove-summary-statistic-columns" class="section level3">
 <h3>Remove summary statistic columns</h3>
 <p>The data include summary statistics on certain lines. These appear to correspond the original researchers’ arbitrary division of the data into time series windows. In the data, these lines are coded with the new_window flag, which is set to “yes” on lines with the summary statistics.</p>
-<p>For this analysis, we will remove all of those summary statistics, as well as the observation sequence number and the subject (user_name). None of variables would be meaningful in an application that would provide a gym user real-time feedback.</p>
-<pre class="r"><code># grep the blank columns and remove them from the set. We'll  do that to the test data later.
-statcols &lt;- grep(&quot;^(X|user|new|var|avg|stddev|kurtosis|skewness|max|min|amplitude)&quot;, colnames(pmlTrain))
-pmlTrain &lt;- pmlTrain[, -statcols]
+<p>For this analysis, we will remove all of those summary statistics, as well as the observation sequence number and the subject (user_name). None of these variables would be meaningful in an application that would provide a gym user real-time feedback.</p>
+<pre class="r"><code># use grep to remove files by name pattern. We'll  do that to the test data later.
+delcols &lt;- grep(&quot;^(X|user|new|var|avg|stddev|kurtosis|skewness|max|min|amplitude)&quot;, colnames(pmlTrain))
+pmlTrain &lt;- pmlTrain[, -delcols]
 dim(pmlTrain)</code></pre>
 <pre><code>## [1] 19622    57</code></pre>
 </div>
@@ -169,7 +169,7 @@ testing = pmlTrain[ -inTrain,]</code></pre>
 <p>In implementing the application, I would suggest giving the user feedback at the end of each repetition of an exercise. The feedback would represent the majority of classifications of observations during the rep. An additional “end of repetition” marker would be needed for that application.</p>
 <div id="generate-predicted-classes-for-submission." class="section level3">
 <h3>Generate predicted classes for submission.</h3>
-<pre class="r"><code>testPred &lt;- predict(rfFit, newdata=pmlTest[, - statcols])
+<pre class="r"><code>testPred &lt;- predict(rfFit, newdata=pmlTest[, - delcols])
 testPred</code></pre>
 <pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
 ## Levels: A B C D E</code></pre>

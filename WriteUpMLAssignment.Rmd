@@ -2,7 +2,7 @@
 title: "Machine Learning Project"
 author: "JoeY"
 date: "10/11/2014"
-output: html_document
+output: pdf_document
 ---
 ## Project Summary
 The aim of this project is to predict whether a specific exercise was performed correctly, based on analysis of sensor data that has been collected while subjects performed that exercise correctly and with common errors. The present study finds that the random forest method from the R caret package performs quite well, using the model's default training options.
@@ -10,13 +10,8 @@ The aim of this project is to predict whether a specific exercise was performed 
 Below is a brief synopsis of the experiment design from the original research paper. The paper provides additional details about the instruments used to collect data, and controls on performance and monitoring. 
 
 > Participants were asked to perform one set of 10 repetitions
-of the Unilateral Dumbbell Biceps Curl in five different fash-
-ions: exactly according to the specification (Class A), throw-
-ing the elbows to the front (Class B), lifting the dumbbell
-only halfway (Class C), lowering the dumbbell only halfway
-(Class D) and throwing the hips to the front (Class E). Class
-A corresponds to the specifed execution of the exercise,
-while the other 4 classes correspond to common mistakes." 
+of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell
+only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Class A corresponds to the specifed execution of the exercise, while the other 4 classes correspond to common mistakes." 
 source: http://groupware.les.inf.puc-rio.br/public/papers/2013.Velloso.QAR-WLE.pdf
 
 ### Load libraries
@@ -56,11 +51,11 @@ plot(pmlTrain$user_name,pmlTrain$classe, xlab="user name", ylab="performance cla
 ### Remove summary statistic columns
 The data include summary statistics on certain lines. These appear to correspond the original researchers' arbitrary division of the data into time series windows. In the data, these lines are coded with the new_window flag, which is set to "yes" on lines with the summary statistics. 
 
-For this analysis, we will remove all of those summary statistics, as well as the observation sequence number and the subject (user_name). None of variables would be meaningful in an application that would provide a gym user real-time feedback.
+For this analysis, we will remove all of those summary statistics, as well as the observation sequence number and the subject (user_name). None of these variables would be meaningful in an application that would provide a gym user real-time feedback.
 ```{r}
-# grep the blank columns and remove them from the set. We'll  do that to the test data later.
-statcols <- grep("^(X|user|new|var|avg|stddev|kurtosis|skewness|max|min|amplitude)", colnames(pmlTrain))
-pmlTrain <- pmlTrain[, -statcols]
+# use grep to remove files by name pattern. We'll  do that to the test data later.
+delcols <- grep("^(X|user|new|var|avg|stddev|kurtosis|skewness|max|min|amplitude)", colnames(pmlTrain))
+pmlTrain <- pmlTrain[, -delcols]
 dim(pmlTrain)
 ```
 
@@ -97,7 +92,7 @@ In implementing the application, I would suggest giving the user feedback at the
 
 ### Generate predicted classes for submission.
 ```{r}
-testPred <- predict(rfFit, newdata=pmlTest[, - statcols])
+testPred <- predict(rfFit, newdata=pmlTest[, - delcols])
 testPred
 ```
 
